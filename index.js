@@ -7,6 +7,29 @@ let dictionary = {
   ]
 }
 
+function substringSearch() {
+  let sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  // range диапазон поиска 
+  let range = sheet.getRange("A1:G7").getValues();
+
+  range.forEach((item, row) => {
+    for (let column = 0; column < item.length; column++) {
+      if (item[column] != "") {
+          let color = SpreadsheetApp.newTextStyle().setForegroundColor("red").build();
+          let richText = SpreadsheetApp.newRichTextValue().setText(item[column]);
+        // item[column] текст ячейки
+        dictionary.stop_words.forEach(word => {
+          let arr = searchIndex(word.toLocaleLowerCase(), item[column].toLocaleLowerCase());
+            arr.forEach(ind => {
+                richText.setTextStyle(ind.startIndex, ind.endIndex, color);
+            })
+             sheet.getRange(row + 1, column + 1).setRichTextValue(richText.build()); 
+        })
+      }
+    }
+  })
+}
+
 function find(i, subStr, str) {
   // Алгоритм Кнута-Морриса-Пратта (КМП)
   // i-с какого места строки  ищем
@@ -45,27 +68,4 @@ function searchIndex(word, text) {
     startIndex++
   }
  return res;
-}
-
-function substringSearch() {
-  let sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  // range диапазон поиска
-  let range = sheet.getRange("A1:G7").getValues();
-
-  range.forEach((item, row) => {
-    for (let column = 0; column < item.length; column++) {
-      if (item[column] != "") {
-          let color = SpreadsheetApp.newTextStyle().setForegroundColor("red").build();
-          let richText = SpreadsheetApp.newRichTextValue().setText(item[column]);
-        // item[column] текст ячейки
-        dictionary.stop_words.forEach(word => {
-          let arr = searchIndex(word.toLocaleLowerCase(), item[column].toLocaleLowerCase());
-            arr.forEach(ind => {
-                richText.setTextStyle(ind.startIndex, ind.endIndex, color);
-            })
-             sheet.getRange(row + 1, column + 1).setRichTextValue(richText.build()); 
-        })
-      }
-    }
-  })
 }
