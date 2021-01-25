@@ -9,7 +9,7 @@ function substringSearch() {
 
   range.forEach((item, row) => {
     for (let column = 0; column < item.length; column++) {
-      if (item[column] != "") {
+      if (typeof item[column] === "string" && item[column] != "") {
         let color = SpreadsheetApp.newTextStyle()
           .setForegroundColor("red")
           .build();
